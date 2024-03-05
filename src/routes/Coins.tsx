@@ -51,7 +51,7 @@ const Img = styled.img`
   height: 35px;
   margin-right: 10px;
 `;
-interface CoinInterface {
+interface ICoin {
   id: string;
   name: string;
   symbol: string;
@@ -73,7 +73,7 @@ function Coins() {
   //     setLoading(false);
   //   })();
   // }, []);
-  const { isLoading, data } = useQuery<CoinInterface[]>("allCoins", fetchCoins);
+  const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
   return (
     <Container>
       <Header>
