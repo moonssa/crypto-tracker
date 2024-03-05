@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Route, Switch, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { URL } from "./Coins";
+import Price from "./Price";
+import Chart from "./Chart";
 interface Params {
   coinId: string;
 }
@@ -23,6 +25,30 @@ const Loader = styled.span`
 const Title = styled.h1`
   font-size: 48px;
   color: ${(props) => props.theme.accentColor};
+`;
+
+const Overview = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+`;
+
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  span:first-child {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+`;
+const Description = styled.p`
+  margin: 20px 0px;
+  line-height: 1.2;
 `;
 
 interface RouteState {
@@ -103,16 +129,57 @@ function Coin() {
         await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
       ).json();
       setInfo(infoData);
-      setPriceInfo(priceInfo);
+      setPriceInfo(priceData);
       setLoading(false);
     })();
-  }, []);
+  }, [coinId]);
   return (
     <Container>
       <Header>
-        <Title> {state?.name || "Loading"} </Title>
+        <Title>
+          {state?.name ? state.name : loading ? "Loading..." : info?.name}{" "}
+        </Title>
       </Header>
-      {loading ? <Loader>Loading...</Loader> : null}
+      {loading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <>
+          <Overview>
+            <OverviewItem>
+              <span>Rank:</span>
+              <span>{info?.rank}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>SYMBOL:</span>
+              <span>{info?.symbol}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Open Source:</span>
+              <span>{info?.open_source ? "Yes" : "No"}</span>
+            </OverviewItem>
+          </Overview>
+
+          <Description>{info?.description}</Description>
+          <Overview>
+            <OverviewItem>
+              <span>TOTAL SUPLY</span>
+              <span>{priceInfo?.total_supply}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>MAX SUPPLY:</span>
+              <span>{priceInfo?.max_supply}</span>
+            </OverviewItem>
+          </Overview>
+          <Switch>
+            <Route path={`/${coinId}/price`}>
+              <Price />
+            </Route>
+            <Route path={`/${coinId}/chart`}>
+              <Chart />
+            </Route>
+          </Switch>
+        </>
+      )}
     </Container>
   );
 }
