@@ -8,7 +8,6 @@ import {
   useRouteMatch,
 } from "react-router-dom";
 import styled from "styled-components";
-import { URL } from "./Coins";
 import Price from "./Price";
 import Chart from "./Chart";
 import { fetchCoinInfo, fetchCoinTickers } from "./api";
@@ -208,7 +207,7 @@ function Coin() {
               <Price />
             </Route>
             <Route path={`/:coinId/chart`}>
-              <Chart />
+              <Chart coinId={coinId} />
             </Route>
           </Switch>
         </>
