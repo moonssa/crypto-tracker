@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import {
   Link,
   Route,
@@ -30,9 +30,21 @@ const Loader = styled.span`
   text-align: center;
   display: block;
 `;
+
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 중앙 정렬 */
+  width: 100%;
+`;
 const Title = styled.h1`
   font-size: 48px;
   color: ${(props) => props.theme.accentColor};
+  margin: 0;
+`;
+const ArrowLink = styled(Link)`
+  margin-right: auto; /* 화살표를 왼쪽으로 정렬 */
+  font-size: 48px;
 `;
 
 const Overview = styled.div`
@@ -154,16 +166,24 @@ function Coin() {
   );
   const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
     ["tickers", coinId],
-    () => fetchCoinTickers(coinId),
-    { refetchInterval: 5000 }
+    () => fetchCoinTickers(coinId)
+    // { refetchInterval: 5000 }
   );
   const loading = infoLoading || tickersLoading;
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
+        </title>
+      </Helmet>
       <Header>
+        {/* <TitleContainer> */}
+        <ArrowLink to="/">&larr;</ArrowLink>
         <Title>
-          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}{" "}
+          {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
+        {/* </TitleContainer> */}
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
