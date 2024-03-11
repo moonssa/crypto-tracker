@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "./api";
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atom";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -63,6 +65,8 @@ interface ICoin {
 
 // export const URL = "https://api.coinpaprika.com/v1/coins";
 function Coins() {
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
   return (
     <Container>
@@ -71,6 +75,9 @@ function Coins() {
       </Helmet>
       <Header>
         <Title>코인 리스트</Title>
+        <button onClick={() => setDarkAtom((prev) => !prev)}>
+          Toggle Mode
+        </button>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>

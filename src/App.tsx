@@ -1,8 +1,11 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import Router from "./Router";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { useRecoilValue } from "recoil";
+import { darkTheme, lightTheme } from "./theme";
+import { isDarkAtom } from "./atom";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -72,11 +75,14 @@ const Wrapper = styled.div`
   background-color: ${(props) => props.theme.backgroundColor};
 `;
 function App() {
+  const isDark = useRecoilValue(isDarkAtom);
   return (
     <div>
-      <GlobalStyle />
-      <Router />
-      <ReactQueryDevtools initialIsOpen={true} />
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <Router />
+        <ReactQueryDevtools initialIsOpen={true} />
+      </ThemeProvider>
     </div>
   );
 }
